@@ -1,0 +1,49 @@
+#+TITLE: Chapter 1
+
+* 1.1.8 Procedures as Black-Box Abstractions
+
+Mention of recursive functions! Finally! The procedure is determined in terms of
+itself.
+
+To build a program we want to *decompose* a problem in subproblems, but this
+decomposition has to be meaningful.  We want to create *Procedural Abstractions*.
+
+Create sub-procedures so their implementation —the details– is
+indistinguishable, only the behavior is what we want to care about.
+
+Parameters –at least in scheme— have a local name, to avoid conflicts with
+external variables.  Procedures are said to have *formal parameters*, the
+definition of the procedure *binds* its parameters, no matter what their name
+is.  If a variable is not *bound* it is *free* (in other words, a free variable
+is neither a parameter nor a local variable in the procedure).
+
+** Internal definitions
+
+Sub-procedures can be defined inside another procedure, to avoid name conflicts.
+=sqrt= can be rewritten like this:
+
+#+begin_src scheme
+(define (square x) (* x x))
+
+(define (average x y)
+  (/ (+ x y) 2))
+
+(define (sqrt x)
+  (define (good-enough? guess)
+    (< (abs (- (square guess) x)) 0.001))
+  (define (improve guess)
+    (average guess (/ x guess)))
+  (define (sqrt-iter guess)
+    (if (good-enough? guess)
+        guess
+        (sqrt-iter (improve guess))))
+  (sqrt-iter 1.0))
+
+(sqrt 4)
+#+end_src
+
+#+RESULTS:
+: 2.0000000929222947
+
+This makes =sqrt= a blackbox, users do not have to know or care about =improve=
+or =good-enough?= to use it effectively.
