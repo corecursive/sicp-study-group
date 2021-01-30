@@ -23,8 +23,6 @@
 
 (define (ff-iter a b c count)
   (cond ((= count 0) c)
-        ((= count 1) b)
-        ((= count 2) a)
         (else (ff-iter (+ a (* 2 b) (* 3 c)) a b (- count 1)))))
 
 (ff 34)                                  ; 1950203239787, instantaneous
