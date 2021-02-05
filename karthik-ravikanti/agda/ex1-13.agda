@@ -16,7 +16,7 @@ fib n = fib (n - 1) + fib (n - 2)
 To Prove:
 ---------
 
-fib n = (ϕ^n - ψ^n) / sqrt 5
+fib n = (ϕⁿ - ψⁿ) / sqrt 5
 
 Proof:
 ------
@@ -36,14 +36,14 @@ Proof:
   = fib 1 + fib 0
   = fib 2
 
-(ϕ^n - ψ^n) / sqrt 5
-  = (ϕ^(n - 1) * ϕ - ψ^(n - 1) * ψ) / sqrt 5
-  = ((fib (n - 1) * sqrt 5 + ψ^(n - 1)) * ϕ - (ϕ^(n - 1) - fib (n - 1) * sqrt 5) * ψ) / sqrt 5
-  = fib (n - 1) * ϕ + ψ^(n - 1) * ϕ / sqrt 5 - ϕ^(n - 1) * ψ / sqrt 5 - fib (n - 1) * ψ
-  = fib (n - 1) * (ϕ + ψ) + (ψ^(n - 1) * ϕ - ϕ^(n - 1) * ψ) / sqrt 5
-  = fib (n - 1) + (ψ^(n - 2) * ψ * ϕ - ϕ^(n - 2) * ϕ * ψ) / sqrt 5
-  = fib (n - 1) + (ψ^(n - 2) * (-1) - ϕ^(n - 2) * (-1)) / sqrt 5
-  = fib (n - 1) + (ϕ^(n - 2) - ψ^(n - 2)) / sqrt 5
+(ϕⁿ - ψⁿ) / sqrt 5
+  = (ϕ⁽ⁿ⁻¹⁾ * ϕ - ψ⁽ⁿ⁻¹⁾ * ψ) / sqrt 5
+  = ((fib (n - 1) * sqrt 5 + ψ⁽ⁿ⁻¹⁾) * ϕ - (ϕ⁽ⁿ⁻¹⁾ - fib (n - 1) * sqrt 5) * ψ) / sqrt 5
+  = fib (n - 1) * ϕ + ψ⁽ⁿ⁻¹⁾ * ϕ / sqrt 5 - ϕ⁽ⁿ⁻¹⁾ * ψ / sqrt 5 - fib (n - 1) * ψ
+  = fib (n - 1) * (ϕ + ψ) + (ψ⁽ⁿ⁻¹⁾ * ϕ - ϕ⁽ⁿ⁻¹⁾ * ψ) / sqrt 5
+  = fib (n - 1) + (ψ⁽ⁿ⁻²⁾ * ψ * ϕ - ϕ⁽ⁿ⁻²⁾ * ϕ * ψ) / sqrt 5
+  = fib (n - 1) + (ψ⁽ⁿ⁻²⁾ * (-1) - ϕ⁽ⁿ⁻²⁾ * (-1)) / sqrt 5
+  = fib (n - 1) + (ϕ⁽ⁿ⁻²⁾ - ψ⁽ⁿ⁻²⁾) / sqrt 5
   = fib (n - 1) + fib (n - 2)
   = fib n
 
@@ -52,35 +52,32 @@ Proof:
 To Prove:
 ---------  
 
-fib n  = round (ϕ^n / sqrt 5)
+fib n  = round (ϕⁿ / sqrt 5)
 
 ⇒
 
-|fib n - ϕ^n / sqrt 5| ≤ 1 / 2
+|fib n - ϕⁿ / sqrt 5| ≤ 1 / 2
 
 
 Proof:
 ------
 
 fib n
-  = (ϕ^n - ψ^n) / sqrt 5
-  = ϕ^n / sqrt 5 - ψ^n / sqrt 5
+  = (ϕⁿ - ψⁿ) / sqrt 5
+  = ϕⁿ / sqrt 5 - ψⁿ / sqrt 5
 
 ⇒
 
-fib n - ϕ^n / sqrt 5
-  = - ψ^n / sqrt 5
+fib n - ϕⁿ / sqrt 5
+  = - ψⁿ / sqrt 5
 
 ⇒
 
-|fib n - ϕ^n / sqrt 5|
-  = |ψ^n| / sqrt 5
+|fib n - ϕⁿ / sqrt 5|
+  = |ψⁿ| / sqrt 5
   < 1 / sqrt 5
   < 1 / sqrt 5
   < 1 / 2
 
 ∎
 --}
-
-
-
