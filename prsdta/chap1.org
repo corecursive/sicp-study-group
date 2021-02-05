@@ -160,6 +160,33 @@ Simplify:
 ;; g is (2n)ⁿ ?
 
 #+end_src
+** 1.2.2 Tree Recursion
+*** Counting change
+Rewritten in a clearer way?
+#+begin_src scheme
+(define (count-change amount)
+  (cc amount 5))
+
+(define (cc amount kinds-of-coins)
+  (cond [(= amount 0) 1]
+        [(or (< amount 0)
+             (= kinds-of-coins 0))
+         0]
+        [else
+         (let* ([next-coin (- kinds-of-coins 1)]
+                [coin-value (first-denomination kinds-of-coins)]
+                [rest (- amount coin-value)])
+           (+ (cc amount next-coin)
+              (cc rest kinds-of-coins)))]))
+
+(define (first-denomination kinds-of-coins)
+  (case kinds-of-coins [(1) 1]
+                       [(2) 5]
+                       [(3) 10]
+                       [(4) 25]
+                       [(5) 50]))
+#+end_src
+
 ** 1.2.3 Orders of growth
 Amount of resources to solve a problem: =R(n)=
 With =n= the parameter that measures the size of the problem.
