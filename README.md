@@ -11,8 +11,8 @@
  - [x] 1-1-7::            Example: Square Roots by Newton's Method
  - [x] 1-1-8::            Procedures as Black-Box Abstractions
  - [x] 1-2-1::            Linear Recursion and Iteration
- - [ ] 1-2-2::            Tree Recursion
- - [ ] 1-2-3::            Orders of Growth
+ - [x] 1-2-2::            Tree Recursion
+ - [x] 1-2-3::            Orders of Growth
  - [ ] 1-2-4::            Exponentiation
  - [ ] 1-2-5::            Greatest Common Divisors
  - [ ] 1-2-6::            Example: Testing for Primality
@@ -117,3 +117,7 @@
 
  - [The web version of the TeXinfo version](https://sarabander.github.io/sicp/)
  - From within Emacs: `M-x package-install sicp`
+
+### Resources
+
+ - [Scheme Wiki - SICP solutions](http://community.schemewiki.org/?sicp-solutions)
