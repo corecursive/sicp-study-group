@@ -118,6 +118,8 @@
  - [The web version of the TeXinfo version](https://sarabander.github.io/sicp/)
  - From within Emacs: `M-x package-install sicp`
 
-### Resources
+### Other solutions to exercises
 
- - [Scheme Wiki - SICP solutions](http://community.schemewiki.org/?sicp-solutions)
+ - [SchemeWiki](http://community.schemewiki.org/?SICP-Solutions)
+ - [PLVM](https://github.com/codereport/SICP-2020)
+ - [Bill the Lizard](https://billthelizard.blogspot.com/search/label/sicp)
