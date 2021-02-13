@@ -13,8 +13,8 @@
  - [x] 1-2-1::            Linear Recursion and Iteration
  - [x] 1-2-2::            Tree Recursion
  - [x] 1-2-3::            Orders of Growth
- - [ ] 1-2-4::            Exponentiation
- - [ ] 1-2-5::            Greatest Common Divisors
+ - [x] 1-2-4::            Exponentiation
+ - [x] 1-2-5::            Greatest Common Divisors
  - [ ] 1-2-6::            Example: Testing for Primality
  - [ ] 1-3-1::            Procedures as Arguments
  - [ ] 1-3-2::            Constructing Procedures Using `Lambda'
