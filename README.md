@@ -123,3 +123,6 @@
  - [SchemeWiki](http://community.schemewiki.org/?SICP-Solutions)
  - [PLVM](https://github.com/codereport/SICP-2020)
  - [Bill the Lizard](https://billthelizard.blogspot.com/search/label/sicp)
+
+### Learning aids
+ - [Normal, Applicative and Lazy Evaluation](https://sookocheff.com/post/fp/evaluating-lambda-expressions/)
