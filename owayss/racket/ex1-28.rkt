@@ -29,8 +29,6 @@
           (else
             (remainder (* base (expmod base (- exp 1) mod)) 
                       mod))))
-  (define (expmod base exp mod) (remainder (fast-expt base exp) mod))
-
   (define (try-it a)
     (= (expmod a n n) a))
 
