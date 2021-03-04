@@ -404,4 +404,137 @@ powerful way to think about the design of iterative algorithms.)
   (define (expt-iter b counter product)
     ?)
   (expt-iter b ? ?))
+** 1.3 Formulating Abstractions with Higher-Order Procedures
+*** 1.3.2 Constructing Procedures Using Lambda
+Introduces the lambda form for simple, one time use functions:
+#+begin_src scheme
+(lambda (⟨formal-parameters⟩) ⟨body⟩)
 #+end_src
+Such as plus four:
+#+begin_src scheme
+(lambda (x) (+ x 4))
+#+end_src
+Note that the form ~(define (func a))~ is just a more terse way to bind a
+~lambda~ to a variable.
+
+
+Then introduces the =let= form for temporary variables —including lambdas of
+course.
+#+begin_src scheme
+(let ((⟨var₁⟩ ⟨exp₁⟩)
+      (⟨var₂⟩ ⟨exp₂⟩)
+      …
+      (⟨varₙ⟩ ⟨expₙ⟩))
+  ⟨body⟩)
+#+end_src
+Note that the value of =body= is returned by the ~let~ form —unlike javascript
+variables :rage:.
+
+*Scoping*:
+
+Using a variable name that already exists in the scope will only *shadow* it
+*inside* the =body= of the ~let~.
+The value of the ~let~ bound variables is thus evaluated outside the ~let~.
+#+begin_src scheme
+; We have x = 2 here
+(let ((x 3)
+      (y (+ x 2))) ; x here is the one from the outer scope, y = 4
+  (* x y))
+; > return 12
+#+end_src
+**** Exercise 1.34
+We have
+#+begin_src scheme
+(define (f g) (g 2))
+#+end_src
+
+#+begin_quote
+What happens if we (perversely) ask the interpreter to evaluate the combination
+~(f f)~? Explain.
+#+end_quote
+Chez says:
+=Exception: attempt to apply non-procedure 2=
+
+By applying the substitution model we have:
+#+begin_src scheme
+(f f)
+(f (f 2))
+(f (2 2))
+#+end_src
+Two cannot be called since it's not a procedure.
+
+*** 1.3.3 Procedures as General Methods
+/Finding roots of equations by the half-interval method/
+#+begin_quote
+We are given points =a= and =b= such that =f(a) < 0 < f(b)= then =f= must have
+at least one zero between =a= and =b=
+#+end_quote
+We proceed by using a value between =a= and =b=, then a value bewteen that first
+result and of the two bounds, and we repeat the process until we're close
+enough.
+
+/Finding fixed points of functions/
+
+#+begin_quote
+A number =x= is called a fixed point of a function =f= if =f(x)=x=.
+#+end_quote
+A simple way to check it is to apply it repeatedly to itself and see if the
+result changes.
+
+#+begin_src scheme
+(define tolerance 0.00001)
+
+(define (fixed-point f first-guess)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2))
+       tolerance))
+  (define (try guess)
+    (let ((next (f guess)))
+      (if (close-enough? guess next)
+          next
+          (try next))))
+  (try first-guess))
+#+end_src
+
+We can then use the same process to find the square root of a number. But an
+initial naive implementation does not converge:
+#+begin_src scheme
+(define (sqrt x)
+  (fixed-point (lambda (y) (/ x y))
+               1.0))
+#+end_src
+
+So we try again making sure the next guess doesn't vary as much:
+#+begin_src scheme
+(define (sqrt x)
+  (fixed-point
+   (lambda (y) (average y (/ x y)))
+   1.0))
+#+end_src
+
+**** Exercise 1.35:
+#+begin_quote
+Show that the golden ratio =φ= (1.2.2) is a fixed point of the transformation
+=x ↦ 1 + 1 / x=, and use this fact to compute =φ= by means of the fixed-point
+procedure.
+#+end_quote
+
+#+begin_src scheme
+(define (f x) (+ 1 (/ 1 x)))
+(define phi (/ (+ 1 (sqrt 5)) 2))
+(f phi)
+#+end_src
+#+RESULTS:
+: 1.618033988749895
+
+**** Exercise 1.36:
+#+begin_quote
+Modify fixed-point so that it prints the sequence of approximations it
+generates, using the newline and display primitives shown in Exercise 1.22. Then
+find a solution to =x^x = 1000= by finding a fixed point of =x ↦ log⁡(1000) / log(x)=.
+(Use Scheme’s primitive log procedure, which computes natural logarithms.)
+Compare the number of steps this takes with and without average damping.
+
+(Note that you cannot start fixed-point with a guess of 1, as this would cause
+division by log(1) = 0 .)
+#+end_quote
