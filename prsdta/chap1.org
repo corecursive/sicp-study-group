@@ -481,6 +481,7 @@ A number =x= is called a fixed point of a function =f= if =f(x)=x=.
 A simple way to check it is to apply it repeatedly to itself and see if the
 result changes.
 
+#+name: fixed-point
 #+begin_src scheme
 (define tolerance 0.00001)
 
@@ -527,6 +528,13 @@ procedure.
 #+RESULTS:
 : 1.618033988749895
 
+#+begin_src scheme :noweb yes
+<<fixed-point>>
+(fixed-point (lambda (x) (+ 1 (/ 1 x))) 1.0)
+#+end_src
+
+#+RESULTS:
+
 **** Exercise 1.36:
 #+begin_quote
 Modify fixed-point so that it prints the sequence of approximations it
@@ -538,3 +546,130 @@ Compare the number of steps this takes with and without average damping.
 (Note that you cannot start fixed-point with a guess of 1, as this would cause
 division by log(1) = 0 .)
 #+end_quote
+
+Works with a initial guess over 1 and below 1000-ish?
+
+#+begin_src scheme :results output
+(define tolerance 0.00001)
+
+(define (fixed-point f first-guess)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2))
+       tolerance))
+  (define try
+    ; Cheating a bit here by using a construct offered by Chez
+    (trace-lambda try (guess)
+                  (let ((next (f guess)))
+                    (if (close-enough? guess next)
+                        next
+                        (try next)))))
+  (try first-guess))
+
+(display (fixed-point (lambda (x) (/ (log 1000) (log x))) 2.0))
+#+end_src
+
+#+RESULTS:
+: |(try 9.965784284662087)
+: |(try 3.004472209841214)
+: |(try 6.279195757507157)
+: |(try 3.759850702401539)
+: |(try 5.215843784925895)
+: |(try 4.182207192401397)
+: |(try 4.8277650983445906)
+: |(try 4.387593384662677)
+: |(try 4.671250085763899)
+: |(try 4.481403616895052)
+: |(try 4.6053657460929)
+: |(try 4.5230849678718865)
+: |(try 4.577114682047341)
+: |(try 4.541382480151454)
+: |(try 4.564903245230833)
+: |(try 4.549372679303342)
+: |(try 4.559606491913287)
+: |(try 4.552853875788271)
+: |(try 4.557305529748263)
+: |(try 4.554369064436181)
+: |(try 4.556305311532999)
+: |(try 4.555028263573554)
+: |(try 4.555870396702851)
+: |(try 4.555315001192079)
+: |(try 4.5556812635433275)
+: |(try 4.555439715736846)
+: |(try 4.555599009998291)
+: |(try 4.555493957531389)
+: |(try 4.555563237292884)
+: |(try 4.555517548417651)
+: |(try 4.555547679306398)
+: |(try 4.555527808516254)
+: |(try 4.555540912917957)
+: |4.555532270803653
+: 4.555532270803653
+: > #f
+
+
+With average damping
+#+begin_src scheme
+(define (average x y) (/ (+ x y) 2))
+(define tolerance 0.00001)
+
+(define (fixed-point f first-guess)
+  (define (close-enough? v1 v2)
+    (< (abs (- v1 v2))
+       tolerance))
+  (define try
+    (trace-lambda try (guess)
+                  (let ((next (average guess (f guess))))
+                    (if (close-enough? guess next)
+                        next
+                        (try next)))))
+  (try first-guess))
+
+(fixed-point (lambda (x) (/ (log 1000) (log x))) 2.0)
+#+end_src
+
+#+RESULTS:
+: |(try 2.0)
+: |(try 5.9828921423310435)
+: |(try 4.922168721308343)
+: |(try 4.628224318195455)
+: |(try 4.568346513136242)
+: |(try 4.5577305909237005)
+: |(try 4.555909809045131)
+: |(try 4.555599411610624)
+: |(try 4.5555465521473675)
+: |4.555537551999825
+: 4.555537551999825
+: > #f
+**** Exercise 1.37 :ATTACH:
+:PROPERTIES:
+:ID:       cc391995-caf6-4877-a1f9-d1f2a461e872
+:DIR:      ./.attach
+:END:
+Write the *k-term finite continued fraction* that is:
+[[attachment:_20210305_234722screenshot.png]]
+
+
+#+name: Recursive cont-frac with tracing
+#+begin_src scheme
+(define (cont-frac n d k)
+  (define iter
+    (trace-lambda iter (i)
+                  (if (= i k) (/ (n i) (d i))
+                      (/ (n i)
+                         (+ (d i) (iter (+ i 1)))))))
+    (iter 1.0))
+
+(cont-frac (lambda (i) 1.0) (lambda (i) 1.0) 6.0)
+#+end_src
+
+#+name: Linear cont-frac
+#+begin_src scheme
+(define (cont-frac n d k)
+  (define (iter i res)
+    (if (= i 0)
+        res
+        (let ((next (- i 1)))
+          (iter next (/ (n i)
+                        (+ (d next) res))))))
+  (iter k 0))
+#+end_src
