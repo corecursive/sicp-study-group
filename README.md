@@ -16,9 +16,9 @@
  - [x] 1-2-4::            Exponentiation
  - [x] 1-2-5::            Greatest Common Divisors
  - [x] 1-2-6::            Example: Testing for Primality
- - [ ] 1-3-1::            Procedures as Arguments
- - [ ] 1-3-2::            Constructing Procedures Using `Lambda'
- - [ ] 1-3-3::            Procedures as General Methods
+ - [x] 1-3-1::            Procedures as Arguments
+ - [x] 1-3-2::            Constructing Procedures Using `Lambda'
+ - [-] 1-3-3::            Procedures as General Methods
  - [ ] 1-3-4::            Procedures as Returned Values
  - [ ] 2-1-1::            Example: Arithmetic Operations for Rational Numbers
  - [ ] 2-1-2::            Abstraction Barriers
