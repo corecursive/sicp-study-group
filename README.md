@@ -18,8 +18,8 @@
  - [x] 1-2-6::            Example: Testing for Primality
  - [x] 1-3-1::            Procedures as Arguments
  - [x] 1-3-2::            Constructing Procedures Using `Lambda'
- - [-] 1-3-3::            Procedures as General Methods
- - [ ] 1-3-4::            Procedures as Returned Values
+ - [x] 1-3-3::            Procedures as General Methods
+ - [-] 1-3-4::            Procedures as Returned Values
  - [ ] 2-1-1::            Example: Arithmetic Operations for Rational Numbers
  - [ ] 2-1-2::            Abstraction Barriers
  - [ ] 2-1-3::            What Is Meant by Data?
