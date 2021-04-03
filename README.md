@@ -22,8 +22,8 @@
  - [x] 1-3-4::            Procedures as Returned Values
  - [x] 2-1-1::            Example: Arithmetic Operations for Rational Numbers
  - [x] 2-1-2::            Abstraction Barriers
- - [-] 2-1-3::            What Is Meant by Data?
- - [ ] 2-1-4::            Extended Exercise: Interval Arithmetic
+ - [x] 2-1-3::            What Is Meant by Data?
+ - [x] 2-1-4::            Extended Exercise: Interval Arithmetic
  - [ ] 2-2-1::            Representing Sequences
  - [ ] 2-2-2::            Hierarchical Structures
  - [ ] 2-2-3::            Sequences as Conventional Interfaces
