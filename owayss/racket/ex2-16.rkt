@@ -1,0 +1,3 @@
+; One (naive) way of getting over this shortcoming is to convert those intervals to another representation: if, say, an interval (the resistor's spec) only considered its center, then the expressions will operate on a single floating point number, and the two algebraically-equivalent expressions will lead to similar results (with only small variations from floating-point arithmetic).
+;
+; One can see how this first naive approach can be improved: instead of taking just one value out of the interval, take n equally-distant values, so that each interval (a resistor) is represented by a list of n numbers within that range. This would require a different implementation of the arithmetic on those quantities.
