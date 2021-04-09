@@ -1,0 +1,85 @@
+#+TITLE: Chapter 2 - Building Abstractions with Data
+
+* 2.1 Introduction to Data Abstraction
+** 2.1.1 Example: Arithmetic Operations for Rational Numbers
+Introducting procedures to work with rational numbers:
+
+#+name: rat-operations
+#+begin_src scheme
+
+(define (add-rat x y)
+  (make-rat (+ (* (numer x) (denom y))
+               (* (numer y) (denom x)))
+            (* (denom x) (denom y))))
+
+(define (sub-rat x y)
+  (make-rat (- (* (numer x) (denom y))
+               (* (numer y) (denom x)))
+            (* (denom x) (denom y))))
+
+(define (mul-rat x y)
+  (make-rat (* (numer x) (numer y))
+            (* (denom x) (denom y))))
+
+(define (div-rat x y)
+  (make-rat (* (numer x) (denom y))
+            (* (denom x) (numer y))))
+
+(define (equal-rat? x y)
+  (= (* (numer x) (denom y))
+     (* (numer y) (denom x))))
+#+end_src
+
+Then introduces the pair data type:
+#+begin_src scheme
+(define x (cons 1 2))
+
+(car x) ; 1
+(cdr x) ; 2
+#+end_src
+
+Allows us to create a structure for our rational numbers:
+#+name: make-rat
+#+begin_src scheme
+(define (make-rat n d) (cons n d))
+(define (numer x) (car x))
+(define (denom x) (cdr x))
+#+end_src
+
+#+name: print-rat
+#+begin_src scheme
+(define (print-rat x)
+  (newline)
+  (display (numer x))
+  (display "/")
+  (display (denom x)))
+#+end_src
+
+#+begin_src scheme :results output :noweb yes
+<<make-rat>>
+<<print-rat>>
+(define one-half (make-rat 1 2))
+(print-rat one-half)
+#+end_src
+
+#+RESULTS:
+:
+: 1/2
+
+*** Exercise 2.1
+
+#+name: better-make-rat
+#+begin_src scheme
+(define (make-rat n d)
+  (let ((g (gcd n d))
+        (sign (lambda (n) (if (< n 0) -1 1))))
+    (let ((new-num (/ n g))
+          (new-den (/ d g)))
+      (cons (if (= (sign new-den) (sign new-num))
+                (abs new-num)
+                (- (abs new-num)))
+            (abs new-den)))))
+#+end_src
+
+** 2.1.2 Abstraction Barriers
+
