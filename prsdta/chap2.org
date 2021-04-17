@@ -190,12 +190,10 @@ parity as the first argument.
   (let ((is-odd (odd? head)))
     (define (iter lst res)
       (if (null? lst)
-          res
+          (reverse res)
           (iter (cdr lst)
                 (if (eq? is-odd (odd? (car lst)))
-                    ;; ugly, we have to append here, there should be a cleaner
-                    ;; way with cons-ing?
-                    (append res (list (car lst)))
+                    (cons (car lst) res)
                     res))))
     (iter rest (list head))))
 
@@ -224,4 +222,68 @@ Here are two different definitions of square-list. Complete both of them by fill
   (map square items))
 
 (eq? (square-list (list 1 2 3 4)) '(1 4 9 16))
+#+end_src
+
+#+RESULTS:
+: #f
+*** Exercise 2.22
+Same issue as in 2.20, when iteratively cons-ing, the only way to make a proper
+list would be to prepend the value, since the list is a linked sequence of
+pairs.
+
+*** Exercise 2.23
+¯\_(ツ)_/¯
+#+begin_src scheme :results output
+(define (for-each f list)
+  (map f list)
+  #f)
+
+(for-each
+ (lambda (x) (newline) (display x))
+ (list 57 321 88))
+#+end_src
+
+#+RESULTS:
+:
+: 88
+: 57
+: 321
+
+*** Exercise 2.25:
+Give combinations of cars and cdrs that will pick 7 from each of the following
+lists:
+
+#+begin_src scheme
+(and (= 7 (car (cdaddr '(1 3 (5 7) 9))))
+     (= 7 (caar '((7))))
+     (= 7 (cadadr (cadadr (cadadr '(1 (2 (3 (4 (5 (6 7)))))))))))
+#+end_src
+
+*** Exercise 2.27
+#+begin_quote
+Modify your reverse procedure of Exercise 2.18 to produce a deep-reverse
+procedure that takes a list as argument and returns as its value the list with
+its elements reversed and with all sublists deep-reversed as well.
+#+end_quote
+
+#+begin_src scheme
+(define (reverse lst)
+  (define (iter lst acc)
+    (if (null? lst)
+        acc
+        (iter (cdr lst) (cons (car lst) acc))))
+  (iter lst (list)))
+
+(define x
+  (list (list 1 2) (list 3 4)))
+
+(define (deep-reverse orig-list)
+  (trace-define (iter lst acc)
+    (cond ((null? lst) acc)
+          ((not (pair? lst)) lst)
+          (else (iter (deep-reverse (cdr lst))
+                      (cons (deep-reverse (car lst)) acc)))))
+  (iter orig-list '()))
+
+(deep-reverse x)
 #+end_src
