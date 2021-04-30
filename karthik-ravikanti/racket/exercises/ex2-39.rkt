@@ -27,3 +27,8 @@
   (fold-left (lambda (x y) (cons y x)) nil sequence))
 
 (reverse-left (list 1 2 3))
+
+(define (reverse-diff sequence)
+  ((fold-right (lambda (x y) (lambda (z) (y (cons x z)))) (lambda (x) x) sequence) nil))
+
+(reverse-diff (list 1 2 3))
