@@ -42,3 +42,6 @@
 
 (= (fold-left + 0 (list 1 2 3))
    (fold-right + 0 (list 1 2 3)))       ; #t
+
+(equal? (fold-right cons nil (list 1 2 3))
+       (fold-left cons nil (list 1 2 3))) ;#f
