@@ -25,8 +25,8 @@
  - [x] 2-1-3::            What Is Meant by Data?
  - [x] 2-1-4::            Extended Exercise: Interval Arithmetic
  - [x] 2-2-1::            Representing Sequences
- - [-] 2-2-2::            Hierarchical Structures
- - [ ] 2-2-3::            Sequences as Conventional Interfaces
+ - [x] 2-2-2::            Hierarchical Structures
+ - [-] 2-2-3::            Sequences as Conventional Interfaces
  - [ ] 2-2-4::            Example: A Picture Language
  - [ ] 2-3-1::            Quotation
  - [ ] 2-3-2::            Example: Symbolic Differentiation
