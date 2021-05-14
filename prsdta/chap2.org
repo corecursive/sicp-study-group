@@ -318,3 +318,69 @@ left-to-right order. For example,
 (equal? (fringe (list x x))
         '(1 2 3 4 1 2 3 4))
 #+end_src
+
+*** Exercise 2.40
+#+begin_quote
+Define a procedure unique-pairs that, given an integer n , generates the
+sequence of pairs ( i , j ) with 1 ≤ j < i ≤ n . Use unique-pairs to simplify
+the definition of prime-sum-pairs given above.
+#+end_quote
+
+#+name: acc-defs
+#+begin_src scheme
+(define (accumulate op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence)
+          (accumulate op
+                      initial
+                      (cdr sequence)))))
+
+(define (flatmap proc seq)
+  (accumulate append (list) (map proc seq)))
+
+(define (enumerate-interval low high)
+  (if (> low high)
+      '()
+      (cons low
+            (enumerate-interval (+ low 1) high))))
+#+end_src
+
+#+begin_src scheme :noweb yes
+<<acc-defs>>
+(define (unique-pairs n)
+  (flatmap (lambda (i)
+             (map (lambda (j)
+                    (list i j))
+                  (enumerate-interval (+ 1 i) n)))
+           (enumerate-interval 1 n)))
+
+(unique-pairs 4)
+#+end_src
+
+#+RESULTS:
+: ((1 2) (1 3) (1 4) (2 3) (2 4) (3 4))
+
+*** Exercise 2.41
+#+begin_quote
+Write a procedure to find all ordered triples of distinct positive integers ~i~,
+~j~, and ~k~ less than or equal to a given integer ~n~ that sum to a given
+integer ~s~ .
+#+end_quote
+
+#+begin_src scheme :noweb yes
+<<acc-defs>>
+(define (ordered-triples n sum)
+  (filter
+   (lambda (triple) (= sum (accumulate + 0 triple)))
+   (flatmap (lambda (i)
+              ;; Same as unique-pairs with one more nesting level
+              (flatmap (lambda (j)
+                         (map (lambda (k) (list i j k))
+                              (enumerate-interval (+ j 1) n)))
+                       (enumerate-interval (+ i 1)  n)))
+            (enumerate-interval 1 n))))
+
+(ordered-triples 8 11)
+#+end_src
+
