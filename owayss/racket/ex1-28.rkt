@@ -24,10 +24,10 @@
   (define (expmod base exp mod)
     (cond ((= exp 0) 1)
           ((even? exp)
-            (remainder (square (expmod base (/ exp 2) mod)) 
+            (remainder (square (expmod base (/ exp 2) mod))
                       mod))
           (else
-            (remainder (* base (expmod base (- exp 1) mod)) 
+            (remainder (* base (expmod base (- exp 1) mod))
                       mod))))
   (define (try-it a)
     (= (expmod a n n) a))
@@ -51,7 +51,7 @@
           ((even? exp)
             (expmod-with-check (expmod base (/ exp 2) mod)))
           (else
-            (remainder (* base (expmod base (- exp 1) mod)) 
+            (remainder (* base (expmod base (- exp 1) mod))
                       mod))))
 
   (define (try-it a)
