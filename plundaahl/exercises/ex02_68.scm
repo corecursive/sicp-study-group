@@ -40,7 +40,7 @@
 (define sample-message '(0 1 1 0 0 1 0 1 0 1 1 1 0))
 
 (encode-symbol 'a sample-tree)
-(encode-symbol 'z sample-tree)
+(encode-symbol 'b sample-tree)
 
 (decode sample-message sample-tree)
 (encode '(a d a b b c a) sample-tree)
