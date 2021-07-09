@@ -30,11 +30,11 @@
  - [x] 2-2-4::            Example: A Picture Language
  - [x] 2-3-1::            Quotation
  - [x] 2-3-2::            Example: Symbolic Differentiation
- - [ ] 2-3-3::            Example: Representing Sets
- - [ ] 2-3-4::            Example: Huffman Encoding Trees
- - [ ] 2-4-1::            Representations for Complex Numbers
- - [ ] 2-4-2::            Tagged data
- - [ ] 2-4-3::            Data-Directed Programming and Additivity
+ - [x] 2-3-3::            Example: Representing Sets
+ - [x] 2-3-4::            Example: Huffman Encoding Trees
+ - [x] 2-4-1::            Representations for Complex Numbers
+ - [x] 2-4-2::            Tagged data
+ - [-] 2-4-3::            Data-Directed Programming and Additivity
  - [ ] 2-5-1::            Generic Arithmetic Operations
  - [ ] 2-5-2::            Combining Data of Different Types
  - [ ] 2-5-3::            Example: Symbolic Algebra
