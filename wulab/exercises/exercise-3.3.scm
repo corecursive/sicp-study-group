@@ -18,7 +18,7 @@
 ;;
 
 (define (make-account balance password)
-  (define (incorrect-password amount)
+  (define (incorrect-password . args)
     "Incorrect password")
   (define (withdraw amount)
     (if (>= balance amount)
@@ -28,8 +28,11 @@
   (define (deposit amount)
     (set! balance (+ balance amount))
     balance)
+  (define (verify p)
+    (eq? p password))
   (define (dispatch p m)
-    (cond ((not (eq? p password)) incorrect-password)
+    (cond ((eq? m 'verify) (verify p))
+          ((not (verify p)) incorrect-password)
           ((eq? m 'withdraw) withdraw)
           ((eq? m 'deposit) deposit)
           (else
@@ -40,6 +43,8 @@
 
 (define acc (make-account 100 'secret-password))
 
-(assert (= 60 ((acc 'secret-password 'withdraw) 40)))
 (assert (equal? "Incorrect password"
-                ((acc 'some-other-password 'deposit) 50)))
+                ((acc 'some-other-password 'withdraw) 40)))
+(assert (= 60 ((acc 'secret-password 'withdraw) 40)))
+(assert (not (acc 'some-other-password 'verify)))
+(assert (acc 'secret-password 'verify))
