@@ -22,16 +22,10 @@
 (load "exercise-3.3.scm")
 
 (define (make-joint account password new-password)
-  (define (incorrect-password . args)
-    "Incorrect password")
-  (define (verify p)
-    (eq? p new-password))
-  (define (dispatch p m)
-    (if (verify p)
-        (account password m)
-        incorrect-password))
+  (define (dispatch m)
+    (account password m))
   (if (account password 'verify)
-      dispatch
+      (password-protect dispatch new-password)
       (error "Unauthorized -- MAKE-JOINT")))
 
 
