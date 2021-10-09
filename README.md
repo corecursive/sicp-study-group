@@ -17,7 +17,7 @@
  - [x] 1-2-5::            Greatest Common Divisors
  - [x] 1-2-6::            Example: Testing for Primality
  - [x] 1-3-1::            Procedures as Arguments
- - [x] 1-3-2::            Constructing Procedures Using `Lambda'
+ - [x] 1-3-2::            Constructing Procedures Using `Lambda`
  - [x] 1-3-3::            Procedures as General Methods
  - [x] 1-3-4::            Procedures as Returned Values
  - [x] 2-1-1::            Example: Arithmetic Operations for Rational Numbers
@@ -34,20 +34,20 @@
  - [x] 2-3-4::            Example: Huffman Encoding Trees
  - [x] 2-4-1::            Representations for Complex Numbers
  - [x] 2-4-2::            Tagged data
- - [-] 2-4-3::            Data-Directed Programming and Additivity
- - [ ] 2-5-1::            Generic Arithmetic Operations
- - [ ] 2-5-2::            Combining Data of Different Types
- - [ ] 2-5-3::            Example: Symbolic Algebra
- - [ ] 3-1-1::            Local State Variables
- - [ ] 3-1-2::            The Benefits of Introducing Assignment
- - [ ] 3-1-3::            The Costs of Introducing Assignment
- - [ ] 3-2-1::            The Rules for Evaluation
- - [ ] 3-2-2::            Applying Simple Procedures
- - [ ] 3-2-3::            Frames as the Repository of Local State
- - [ ] 3-2-4::            Internal Definitions
- - [ ] 3-3-1::            Mutable List Structure
- - [ ] 3-3-2::            Representing Queues
- - [ ] 3-3-3::            Representing Tables
+ - [x] 2-4-3::            Data-Directed Programming and Additivity
+ - [x] 2-5-1::            Generic Arithmetic Operations
+ - [x] 2-5-2::            Combining Data of Different Types
+ - [x] 2-5-3::            Example: Symbolic Algebra
+ - [x] 3-1-1::            Local State Variables
+ - [x] 3-1-2::            The Benefits of Introducing Assignment
+ - [x] 3-1-3::            The Costs of Introducing Assignment
+ - [x] 3-2-1::            The Rules for Evaluation
+ - [x] 3-2-2::            Applying Simple Procedures
+ - [x] 3-2-3::            Frames as the Repository of Local State
+ - [x] 3-2-4::            Internal Definitions
+ - [x] 3-3-1::            Mutable List Structure
+ - [x] 3-3-2::            Representing Queues
+ - [x] 3-3-3::            Representing Tables
  - [ ] 3-3-4::            A Simulator for Digital Circuits
  - [ ] 3-3-5::            Propagation of Constraints
  - [ ] 3-4-1::            The Nature of Time in Concurrent Systems
