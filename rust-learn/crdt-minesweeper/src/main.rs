@@ -1,17 +1,23 @@
+use automerge::sync::SyncDoc;
 use autosurgeon::{hydrate, reconcile, Hydrate, Reconcile};
 
 // A simple contact document
 
 #[derive(Debug, Clone, Reconcile, Hydrate, PartialEq)]
 struct MineField {
-    cells: Grid,
+    grid: Grid,
 }
 
-struct Grid(Vec<Vec<Cell>>);
+#[derive(Debug, Clone, Reconcile, Hydrate, PartialEq)]
+struct Grid {
+    cells: Vec<Vec<Cell>>,
+}
 
 impl Grid {
-    fn new() -> Grid {
-        Grid(Vec::new())
+    fn new(size: usize) -> Grid {
+        Grid {
+            cells: vec![vec![Cell::default(); size]; size],
+        }
     }
 }
 
@@ -21,6 +27,15 @@ struct Cell {
     has_a_mine: bool,
 }
 
+impl Default for Cell {
+    fn default() -> Self {
+        Cell {
+            state: CellState::Hidden,
+            has_a_mine: false,
+        }
+    }
+}
+
 #[derive(Debug, Clone, Reconcile, Hydrate, PartialEq)]
 enum CellState {
     Hidden,
@@ -28,50 +43,57 @@ enum CellState {
     Revealed,
 }
 
-fn main() {
-    let mut contact = Contact {
-        name: "Sherlock Holmes".to_string(),
-        address: Address {
-            line_one: "221B Baker St".to_string(),
-            line_two: None,
-            city: "London".to_string(),
-            postcode: "NW1 6XE".to_string(),
-        },
+const FIELD_SIZE: usize = 3;
+
+#[derive(Debug)]
+struct Error;
+
+impl std::error::Error for Error {}
+
+impl std::fmt::Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "")
+    }
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let mut mine_field = MineField {
+        grid: Grid::new(FIELD_SIZE),
     };
 
-    // Put data into a document
-    let mut doc = automerge::AutoCommit::new();
-    reconcile(&mut doc, &contact).unwrap();
+    let mut peer1 = automerge::AutoCommit::new();
+    let mut peer1_state = automerge::sync::State::new();
+    // Peer 1 puts data into the document
+    reconcile(&mut peer1, &mine_field)?;
+    let message1to2 = peer1
+        .sync()
+        .generate_sync_message(&mut peer1_state)
+        .ok_or(Error {})?;
 
-    // Get data out of a document
-    let contact2: Contact = hydrate(&doc).unwrap();
-    assert_eq!(contact, contact2);
+    let mut peer2 = automerge::AutoCommit::new();
+    let mut peer2_state = automerge::sync::State::new();
+    peer2
+        .sync()
+        .receive_sync_message(&mut peer2_state, message1to2)?;
+    let mut mine_field2: MineField = hydrate(&peer2)?;
 
-    // Fork and make changes
-    let mut doc2 = doc.fork().with_actor(automerge::ActorId::random());
-    let mut contact2: Contact = hydrate(&doc2).unwrap();
-    contact2.name = "Dangermouse".to_string();
-    reconcile(&mut doc2, &contact2).unwrap();
+    // Peer 2 modifies the doc
+    mine_field2.grid.cells[0][1].state = CellState::Revealed;
+    reconcile(&mut peer2, &mine_field)?;
+    let message2to1 = peer2
+        .sync()
+        .generate_sync_message(&mut peer2_state)
+        .ok_or(Error {})?;
 
-    // Concurrently on doc1
-    contact.address.line_one = "221C Baker St".to_string();
-    reconcile(&mut doc, &contact).unwrap();
-
-    // Now merge the documents
-    // Reconciled changes will merge in somewhat sensible ways
-    doc.merge(&mut doc2).unwrap();
-
-    let merged: Contact = hydrate(&doc).unwrap();
+    peer1
+        .sync()
+        .receive_sync_message(&mut peer1_state, message2to1)?;
+    let synced: MineField = hydrate(&peer1)?;
     assert_eq!(
-        merged,
-        Contact {
-            name: "Dangermouse".to_string(), // This was updated in the first doc
-            address: Address {
-                line_one: "221C Baker St".to_string(), // This was concurrently updated in doc2
-                line_two: None,
-                city: "London".to_string(),
-                postcode: "NW1 6XE".to_string(),
-            }
+        synced,
+        MineField {
+            grid: Grid::new(FIELD_SIZE),
         }
-    )
+    );
+    Ok(())
 }
