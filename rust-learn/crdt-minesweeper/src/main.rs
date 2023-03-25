@@ -57,43 +57,64 @@ impl std::fmt::Display for Error {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let mut mine_field = MineField {
-        grid: Grid::new(FIELD_SIZE),
-    };
-
     let mut peer1 = automerge::AutoCommit::new();
     let mut peer1_state = automerge::sync::State::new();
     // Peer 1 puts data into the document
-    reconcile(&mut peer1, &mine_field)?;
+    reconcile(
+        &mut peer1,
+        &MineField {
+            grid: Grid::new(FIELD_SIZE),
+        },
+    )
+    .unwrap();
     let message1to2 = peer1
         .sync()
         .generate_sync_message(&mut peer1_state)
-        .ok_or(Error {})?;
+        .ok_or(Error {})
+        .unwrap();
 
     let mut peer2 = automerge::AutoCommit::new();
     let mut peer2_state = automerge::sync::State::new();
     peer2
         .sync()
-        .receive_sync_message(&mut peer2_state, message1to2)?;
-    let mut mine_field2: MineField = hydrate(&peer2)?;
+        .receive_sync_message(&mut peer2_state, message1to2)
+        .unwrap();
 
-    // Peer 2 modifies the doc
-    mine_field2.grid.cells[0][1].state = CellState::Revealed;
-    reconcile(&mut peer2, &mine_field)?;
     let message2to1 = peer2
         .sync()
         .generate_sync_message(&mut peer2_state)
-        .ok_or(Error {})?;
+        .ok_or(Error {})
+        .unwrap();
+    peer1
+        .sync()
+        .receive_sync_message(&mut peer1_state, message2to1)
+        .unwrap();
+
+    let message1to2 = peer1
+        .sync()
+        .generate_sync_message(&mut peer1_state)
+        .ok_or(Error {})
+        .unwrap();
+    peer2
+        .sync()
+        .receive_sync_message(&mut peer2_state, message1to2)
+        .unwrap();
+    let mut mine_field2: MineField = hydrate(&peer2).unwrap();
+
+    // Peer 2 modifies the doc
+    mine_field2.grid.cells[0][1].state = CellState::Revealed;
+    reconcile(&mut peer2, &mine_field2).unwrap();
+    let message2to1 = peer2
+        .sync()
+        .generate_sync_message(&mut peer2_state)
+        .ok_or(Error {})
+        .unwrap();
 
     peer1
         .sync()
-        .receive_sync_message(&mut peer1_state, message2to1)?;
-    let synced: MineField = hydrate(&peer1)?;
-    assert_eq!(
-        synced,
-        MineField {
-            grid: Grid::new(FIELD_SIZE),
-        }
-    );
+        .receive_sync_message(&mut peer1_state, message2to1)
+        .unwrap();
+    let synced: MineField = hydrate(&peer1).unwrap();
+    assert_eq!(synced, mine_field2);
     Ok(())
 }
