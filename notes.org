@@ -1,0 +1,20 @@
+* Inbox
+** [2023-04-15 Sat 09:48] Architecture note
+We could have either a peer-to-peer architecture or have a process act as a
+server that clients can connect to.  The second one makes it easier to keep
+state of all peers--this is similar to Google Docs.
+
+Peer-to-peer requires some kind of discovery system.
+*** We're taking the approach of a game server and thin clients
+#+begin_src conf
+# Example of customizing binaries in Cargo.toml.
+[[bin]]
+name = "cool-tool"
+test = false
+bench = false
+
+[[bin]]
+name = "frobnicator"
+required-features = ["frobnicate"]
+#+end_src
+https://doc.rust-lang.org/cargo/reference/cargo-targets.html
