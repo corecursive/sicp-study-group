@@ -4,7 +4,7 @@ use std::{
 };
 
 use automerge::sync::{Message, SyncDoc};
-use autosurgeon::{hydrate, reconcile, Hydrate, Reconcile};
+use autosurgeon::{reconcile, Hydrate, Reconcile};
 
 // A simple contact document
 
@@ -89,17 +89,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         // TODO need to handle message length to ensure proper decoding
         // use gRPC or something? Maybe https://github.com/google/tarpc/
         let two_to_one = Message::decode(buf_reader.buffer());
-        if let Ok(message) = two_to_one {
+        if let Ok(message) = &two_to_one {
             println!("two to one");
             peer1
                 .sync()
-                .receive_sync_message(&mut peer1_state, message)
+                .receive_sync_message(&mut peer1_state, message.to_owned())
                 .unwrap();
         }
         let one_to_two = peer1.sync().generate_sync_message(&mut peer1_state);
-        if let Some(message) = one_to_two {
+        if let Some(message) = &one_to_two {
             println!("one to two");
-            stream.write(&message.encode());
+            stream.write(&message.to_owned().encode());
         }
         if (&two_to_one).is_err() && one_to_two.is_none() {
             break;
