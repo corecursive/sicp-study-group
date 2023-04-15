@@ -1,5 +1,10 @@
-use automerge::sync::SyncDoc;
-use autosurgeon::{hydrate, reconcile, Hydrate, Reconcile};
+use std::{
+    io::{BufReader, Write},
+    net::TcpListener,
+};
+
+use automerge::sync::{Message, SyncDoc};
+use autosurgeon::{reconcile, Hydrate, Reconcile};
 
 // A simple contact document
 
@@ -57,6 +62,9 @@ impl std::fmt::Display for Error {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
+
+    let mut stream = listener.incoming().next().unwrap()?;
     let mut peer1 = automerge::AutoCommit::new();
     let mut peer1_state = automerge::sync::State::new();
     // Peer 1 puts data into the document
@@ -71,50 +79,32 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .sync()
         .generate_sync_message(&mut peer1_state)
         .ok_or(Error {})
-        .unwrap();
+        .unwrap()
+        .encode();
 
-    let mut peer2 = automerge::AutoCommit::new();
-    let mut peer2_state = automerge::sync::State::new();
-    peer2
-        .sync()
-        .receive_sync_message(&mut peer2_state, message1to2)
-        .unwrap();
+    stream.write(&message1to2);
 
-    let message2to1 = peer2
-        .sync()
-        .generate_sync_message(&mut peer2_state)
-        .ok_or(Error {})
-        .unwrap();
-    peer1
-        .sync()
-        .receive_sync_message(&mut peer1_state, message2to1)
-        .unwrap();
+    loop {
+        let buf_reader = BufReader::new(&stream);
+        // TODO need to handle message length to ensure proper decoding
+        // use gRPC or something? Maybe https://github.com/google/tarpc/
+        let two_to_one = Message::decode(buf_reader.buffer());
+        if let Ok(message) = &two_to_one {
+            println!("two to one");
+            peer1
+                .sync()
+                .receive_sync_message(&mut peer1_state, message.to_owned())
+                .unwrap();
+        }
+        let one_to_two = peer1.sync().generate_sync_message(&mut peer1_state);
+        if let Some(message) = &one_to_two {
+            println!("one to two");
+            stream.write(&message.to_owned().encode());
+        }
+        if (&two_to_one).is_err() && one_to_two.is_none() {
+            break;
+        }
+    }
 
-    let message1to2 = peer1
-        .sync()
-        .generate_sync_message(&mut peer1_state)
-        .ok_or(Error {})
-        .unwrap();
-    peer2
-        .sync()
-        .receive_sync_message(&mut peer2_state, message1to2)
-        .unwrap();
-    let mut mine_field2: MineField = hydrate(&peer2).unwrap();
-
-    // Peer 2 modifies the doc
-    mine_field2.grid.cells[0][1].state = CellState::Revealed;
-    reconcile(&mut peer2, &mine_field2).unwrap();
-    let message2to1 = peer2
-        .sync()
-        .generate_sync_message(&mut peer2_state)
-        .ok_or(Error {})
-        .unwrap();
-
-    peer1
-        .sync()
-        .receive_sync_message(&mut peer1_state, message2to1)
-        .unwrap();
-    let synced: MineField = hydrate(&peer1).unwrap();
-    assert_eq!(synced, mine_field2);
     Ok(())
 }
