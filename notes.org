@@ -18,3 +18,9 @@ name = "frobnicator"
 required-features = ["frobnicate"]
 #+end_src
 https://doc.rust-lang.org/cargo/reference/cargo-targets.html
+
+** [2023-04-29 Sat] Look into: [[https://github.com/google/tarpc/issues/300][google/tarpc#300 Symmetric/Two-way RPC possible?]]
+How to create a client-server architecture with tarpc?
+
+Basic tarpc examples makes it easy to send a message, but how do we listen for
+new messages on the clients?
