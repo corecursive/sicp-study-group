@@ -9,50 +9,6 @@ use tarpc::{
     client, context,
 };
 
-// A simple contact document
-
-#[derive(Debug, Clone, Reconcile, Hydrate, PartialEq)]
-struct MineField {
-    grid: Grid,
-}
-
-#[derive(Debug, Clone, Reconcile, Hydrate, PartialEq)]
-struct Grid {
-    cells: Vec<Vec<Cell>>,
-}
-
-impl Grid {
-    fn new(size: usize) -> Grid {
-        Grid {
-            cells: vec![vec![Cell::default(); size]; size],
-        }
-    }
-}
-
-#[derive(Debug, Clone, Reconcile, Hydrate, PartialEq)]
-struct Cell {
-    state: CellState,
-    has_a_mine: bool,
-}
-
-impl Default for Cell {
-    fn default() -> Self {
-        Cell {
-            state: CellState::Hidden,
-            has_a_mine: false,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Reconcile, Hydrate, PartialEq)]
-enum CellState {
-    Hidden,
-    Flagged,
-    Revealed,
-}
-
-const FIELD_SIZE: usize = 3;
-
 #[derive(Debug)]
 struct Error;
 
@@ -61,36 +17,6 @@ impl std::error::Error for Error {}
 impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "")
-    }
-}
-
-// This is the service definition. It looks a lot like a trait definition.
-// It defines one RPC, sync, which takes one arg, name, and returns a String.
-#[tarpc::service]
-trait Rpc {
-    async fn sync(name: Vec<u8>) -> Vec<u8>;
-    async fn connect(client: ()) -> u8;
-}
-
-// This is the type that implements the generated World trait. It is the business logic
-// and is used to start the server.
-#[derive(Clone)]
-struct GameServer;
-
-impl Rpc for GameServer {
-    // Each defined rpc generates two items in the trait, a fn that serves the RPC, and
-    // an associated type representing the future output by the fn.
-    type SyncFut = Ready<Vec<u8>>;
-    fn sync(self, _: context::Context, name: Vec<u8>) -> Self::SyncFut {
-        // in the server, reconcile, generate, and send a new message
-        future::ready(name)
-    }
-
-    type ConnectFut = Ready<u8>;
-    fn connect(self, _: context::Context, _client: ()) -> Self::ConnectFut {
-        // when a client starts up, it connects and we store a ref
-        let uuid=2;
-        future::ready(uuid)
     }
 }
 

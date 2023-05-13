@@ -11,50 +11,6 @@ use tarpc::{
     server::{self, incoming::Incoming, Channel},
 };
 
-// A simple contact document
-
-#[derive(Debug, Clone, Reconcile, Hydrate, PartialEq)]
-struct MineField {
-    grid: Grid,
-}
-
-#[derive(Debug, Clone, Reconcile, Hydrate, PartialEq)]
-struct Grid {
-    cells: Vec<Vec<Cell>>,
-}
-
-impl Grid {
-    fn new(size: usize) -> Grid {
-        Grid {
-            cells: vec![vec![Cell::default(); size]; size],
-        }
-    }
-}
-
-#[derive(Debug, Clone, Reconcile, Hydrate, PartialEq)]
-struct Cell {
-    state: CellState,
-    has_a_mine: bool,
-}
-
-impl Default for Cell {
-    fn default() -> Self {
-        Cell {
-            state: CellState::Hidden,
-            has_a_mine: false,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Reconcile, Hydrate, PartialEq)]
-enum CellState {
-    Hidden,
-    Flagged,
-    Revealed,
-}
-
-const FIELD_SIZE: usize = 3;
-
 #[derive(Debug)]
 struct Error;
 
@@ -64,13 +20,6 @@ impl std::fmt::Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "")
     }
-}
-
-// This is the service definition. It looks a lot like a trait definition.
-// It defines one RPC, sync, which takes one arg, name, and returns a String.
-#[tarpc::service]
-trait Rpc {
-    async fn sync(name: Vec<u8>) -> Vec<u8>;
 }
 
 // This is the type that implements the generated World trait. It is the business logic
