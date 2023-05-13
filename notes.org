@@ -24,3 +24,5 @@ How to create a client-server architecture with tarpc?
 
 Basic tarpc examples makes it easy to send a message, but how do we listen for
 new messages on the clients?
+*** Temporarily just poll from the client to get updates?
+*** Using this as a base https://github.com/google/tarpc/tree/master/example-service
