@@ -38,15 +38,14 @@ impl Rpc for GameServer {
 
     type ConnectFut = Ready<u8>;
     fn connect(self, _: context::Context, _client: ()) -> Self::ConnectFut {
-        // when a client starts up, it connects and we store a ref
-        let uuid=2;
-        future::ready(uuid)
+        println!("Connected from server");
+        future::ready(42)
     }
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let server_addr = (IpAddr::V6(Ipv6Addr::LOCALHOST), 42);
+    let server_addr = (IpAddr::V6(Ipv6Addr::LOCALHOST), 6009);
 
     let mut listener = tarpc::serde_transport::tcp::listen(&server_addr, Bincode::default).await?;
     listener.config_mut().max_frame_length(usize::MAX);
@@ -64,49 +63,51 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         })
         // Max 10 channels.
         .buffer_unordered(10)
-        .for_each(|_| async {})
+        .for_each(|_| async {
+            // act on channels here if necessary
+        })
         .await;
 
-    let mut peer1 = automerge::AutoCommit::new();
-    let mut peer1_state = automerge::sync::State::new();
-    // Peer 1 puts data into the document
-    reconcile(
-        &mut peer1,
-        &MineField {
-            grid: Grid::new(FIELD_SIZE),
-        },
-    )
-    .unwrap();
-    let message1to2 = peer1
-        .sync()
-        .generate_sync_message(&mut peer1_state)
-        .ok_or(Error {})
-        .unwrap()
-        .encode();
+    // let mut peer1 = automerge::AutoCommit::new();
+    // let mut peer1_state = automerge::sync::State::new();
+    // // Peer 1 puts data into the document
+    // reconcile(
+    //     &mut peer1,
+    //     &MineField {
+    //         grid: Grid::new(FIELD_SIZE),
+    //     },
+    // )
+    // .unwrap();
+    // let message1to2 = peer1
+    //     .sync()
+    //     .generate_sync_message(&mut peer1_state)
+    //     .ok_or(Error {})
+    //     .unwrap()
+    //     .encode();
 
-    // stream.write(&message1to2);
+    // // stream.write(&message1to2);
 
-    loop {
-        // let buf_reader = BufReader::new(&stream);
-        // TODO need to handle message length to ensure proper decoding
-        // use gRPC or something? Maybe https://github.com/google/tarpc/
-        let two_to_one = Message::decode(buf_reader.buffer());
-        if let Ok(message) = &two_to_one {
-            println!("two to one");
-            peer1
-                .sync()
-                .receive_sync_message(&mut peer1_state, message.to_owned())
-                .unwrap();
-        }
-        let one_to_two = peer1.sync().generate_sync_message(&mut peer1_state);
-        if let Some(message) = &one_to_two {
-            println!("one to two");
-            // stream.write(&message.to_owned().encode());
-        }
-        if (&two_to_one).is_err() && one_to_two.is_none() {
-            break;
-        }
-    }
+    // loop {
+    //     // let buf_reader = BufReader::new(&stream);
+    //     // TODO need to handle message length to ensure proper decoding
+    //     // use gRPC or something? Maybe https://github.com/google/tarpc/
+    //     let two_to_one = Message::decode(buf_reader.buffer());
+    //     if let Ok(message) = &two_to_one {
+    //         println!("two to one");
+    //         peer1
+    //             .sync()
+    //             .receive_sync_message(&mut peer1_state, message.to_owned())
+    //             .unwrap();
+    //     }
+    //     let one_to_two = peer1.sync().generate_sync_message(&mut peer1_state);
+    //     if let Some(message) = &one_to_two {
+    //         println!("one to two");
+    //         // stream.write(&message.to_owned().encode());
+    //     }
+    //     if (&two_to_one).is_err() && one_to_two.is_none() {
+    //         break;
+    //     }
+    // }
 
     Ok(())
 }
