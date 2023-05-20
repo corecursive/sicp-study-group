@@ -44,42 +44,42 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Let the background span processor finish.
     sleep(Duration::from_micros(1)).await;
 
-    // let mut peer1 = automerge::AutoCommit::new();
-    // let mut peer1_state = automerge::sync::State::new();
-    // // Peer 1 puts data into the document
-    // reconcile(
-    //     &mut peer1,
-    //     &MineField {
-    //         grid: Grid::new(FIELD_SIZE),
-    //     },
-    // )
-    // .unwrap();
-    // let message1to2 = peer1
-    //     .sync()
-    //     .generate_sync_message(&mut peer1_state)
-    //     .ok_or(Error {})
-    //     .unwrap()
-    //     .encode();
+    let mut peer1 = automerge::AutoCommit::new();
+    let mut peer1_state = automerge::sync::State::new();
+    // Peer 1 puts data into the document
+    reconcile(
+        &mut peer1,
+        &MineField {
+            grid: Grid::new(FIELD_SIZE),
+        },
+    )
+    .unwrap();
+    let message1to2 = peer1
+        .sync()
+        .generate_sync_message(&mut peer1_state)
+        .ok_or(Error {})
+        .unwrap()
+        .encode();
 
-    // loop {
-    //     let res = client.sync(context::current(), message1to2).await?;
-    //     let two_to_one = Message::decode(&res);
-    //     if let Ok(message) = &two_to_one {
-    //         println!("two to one");
-    //         peer1
-    //             .sync()
-    //             .receive_sync_message(&mut peer1_state, message.to_owned())
-    //             .unwrap();
-    //     }
-    //     let one_to_two = peer1.sync().generate_sync_message(&mut peer1_state);
-    //     if let Some(message) = &one_to_two {
-    //         println!("one to two");
-    //         client.sync(context::current(), message.to_owned().encode()).await?;
-    //     }
-    //     if (&two_to_one).is_err() && one_to_two.is_none() {
-    //         break;
-    //     }
-    // }
+    loop {
+        let res = client.sync(context::current(), message1to2).await?;
+        let two_to_one = Message::decode(&res);
+        if let Ok(message) = &two_to_one {
+            println!("two to one");
+            peer1
+                .sync()
+                .receive_sync_message(&mut peer1_state, message.to_owned())
+                .unwrap();
+        }
+        let one_to_two = peer1.sync().generate_sync_message(&mut peer1_state);
+        if let Some(message) = &one_to_two {
+            println!("one to two");
+            client.sync(context::current(), message.to_owned().encode()).await?;
+        }
+        if (&two_to_one).is_err() && one_to_two.is_none() {
+            break;
+        }
+    }
 
     Ok(())
 }

@@ -26,3 +26,19 @@ Basic tarpc examples makes it easy to send a message, but how do we listen for
 new messages on the clients?
 *** Temporarily just poll from the client to get updates?
 *** Using this as a base https://github.com/google/tarpc/tree/master/example-service
+
+** [2023-05-20 Sat] We connected client & server
+Now we need to find to find a way to share the Automerge state between all tokio
+threads.
+This is because ~automerge::sync::SyncDoc::receive_sync_message~ mutates the state.
+
+*** look into [[https://docs.rs/tokio/1.1.1/tokio/sync/index.html#state-synchronization][State synchronization strategies (tokio docs)]]
+We might want to use a ~Mutex~ or ~RwLock~ for sharing the state.
+Reasoning:
+- Wrap automerge state in mutex
+- Wrap mutex access into a function of some sort
+- Pass function to ~GameServer~ when instantiating it
+- In Rpc calls, wait on the mutex, mutate state, release the mutex.
+
+Or, maybe more simply, use a [[https://docs.rs/tokio/1.1.1/tokio/sync/index.html#mpsc-channel][mpsc]] channel in ~main~ to recieve automerge
+messages and update state.
