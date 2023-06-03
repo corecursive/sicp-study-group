@@ -42,3 +42,17 @@ Reasoning:
 
 Or, maybe more simply, use a [[https://docs.rs/tokio/1.1.1/tokio/sync/index.html#mpsc-channel][mpsc]] channel in ~main~ to recieve automerge
 messages and update state.
+
+** [2023-06-03 Sat] Discussion on the role of our server
+With automerge, we may not need server state, as the resolution algorithm can
+resolve conflicts.  But then, it means each client needs to be aware of all
+other clients, and maintain peer state for each, and the server needs to keep
+track of messages received and sent from each peer.
+
+Maybe it's easier to have the server maintain a state, and be a single peer for
+each client?
+
+*** In the end, we should have the server act as a broadcaster.
+The server needs to maintain a queue of message for each client.  So when the
+clients pool the server, they get back all the messages.  Automerge should
+deterministically resolve any conflict.
